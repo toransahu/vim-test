@@ -17,15 +17,26 @@ function! test#java#maventest#build_position(type, position) abort
   if a:type ==# 'nearest'
     let name = s:nearest_test(a:position)
     if !empty(name)
-      return ['-Dtest=' . package . '.' . name]
+        if (exists('g:test#java#maventest#fqcn') && g:test#java#maventest#fqcn ==# 0)
+            return ['-Dtest=' . name]
+        else
+            return ['-Dtest=' . package . '.' . name]
+        endif
     else
-      return ['-Dtest=' . package . '.' . filename . '\*']
+        if (exists('g:test#java#maventest#fqcn') && g:test#java#maventest#fqcn ==# 0)
+            return ['-Dtest=' . name]
+        else
+            return ['-Dtest=' . package . '.' . name]
+        endif
     endif
 
   " ex:  mvn test -Dtest com.you.pkg.App\*  (catches nested test-classes)
   elseif a:type ==# 'file'
-    return ['-Dtest=' . package . '.' . filename . '\*']
-
+        if (exists('g:test#java#maventest#fqcn') && g:test#java#maventest#fqcn ==# 0)
+            return ['-Dtest=' . name]
+        else
+            return ['-Dtest=' . package . '.' . name]
+        endif
   " ex:  mvn test
   else
     return []
